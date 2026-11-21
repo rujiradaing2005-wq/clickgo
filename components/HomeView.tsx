@@ -30,7 +30,7 @@ const LockIcon = () => (
   </Svg>
 );
 
-export default function Home() {
+export default function HomeView() {
   const { t, tr } = useLang();
   const { tableId } = useCart();
   const [s, setS] = useState<Settings | null>(null);
