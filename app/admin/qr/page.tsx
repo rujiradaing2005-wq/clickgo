@@ -34,15 +34,12 @@ export default function AdminQR() {
   return (
     <main className="space-y-4 p-4">
       <div className="flex flex-wrap gap-2 print:hidden">
-        <input value={name} onChange={(e) => setName(e.target.value)} placeholder="ชื่อโต๊ะ / จุดรับสินค้า" className="rounded border p-2" />
-        <input value={nameEn} onChange={(e) => setNameEn(e.target.value)} placeholder="English name (ไม่บังคับ)" className="rounded border p-2" />
+        <input value={name} onChange={(e) => setName(e.target.value)} placeholder="หมายเลขโต๊ะ" className="rounded border p-2" />
         <button onClick={add} className="rounded bg-orange-500 px-4 text-white">เพิ่ม</button>
         <button onClick={() => window.print()} className="rounded border px-4">🖨️ พิมพ์ QR</button>
       </div>
       {origin.includes("localhost") && (
         <p className="rounded bg-yellow-50 p-2 text-sm text-yellow-800 print:hidden">
-          ตอนนี้ QR ชี้ไปที่ localhost ซึ่งมือถือสแกนแล้วเปิดไม่ได้ — ทดสอบด้วยการเปิดหน้านี้ผ่าน IP เครื่อง
-          (เช่น http://192.168.x.x:3000/admin/qr) หรือ deploy ขึ้น Vercel ก่อนพิมพ์ใช้งานจริง
         </p>
       )}
       <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">

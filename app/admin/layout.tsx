@@ -23,9 +23,19 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       setOk(true);
       return;
     }
-    supabase.auth.getSession().then(({ data }) => {
-      if (!data.session) router.replace("/admin/login");
-      else setOk(true);
+    supabase.auth.getSession().then(async ({ data }) => {
+      if (!data.session) return router.replace("/admin/login");
+      // ต้องเป็นพนักงานในตาราง staff (ถ้าตารางยังไม่ถูกสร้าง จะปล่อยผ่านไปก่อน — สิทธิ์จริงคุมที่ฐานข้อมูล)
+      const { data: row, error } = await supabase
+        .from("staff")
+        .select("user_id")
+        .eq("user_id", data.session.user.id)
+        .maybeSingle();
+      if (!error && !row) {
+        await supabase.auth.signOut();
+        return router.replace("/admin/login");
+      }
+      setOk(true);
     });
     const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
       if (!session) router.replace("/admin/login");

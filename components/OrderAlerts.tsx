@@ -75,7 +75,7 @@ export default function OrderAlerts() {
     claims.forEach((r) => {
       if (!claimed.current.has(r.id)) {
         claimed.current.add(r.id);
-        if (ready.current) notify("pay", `💸 ลูกค้าแจ้งโอนแล้ว ${queueNo(r.order_no)}`);
+        if (ready.current) notify("pay", `💸 ลูกค้ายืนยันการชำระเงิน ${queueNo(r.order_no)}`);
       }
     });
     ready.current = true; // ครั้งแรกแค่จดจำ ไม่ส่งเสียง
@@ -123,15 +123,6 @@ export default function OrderAlerts() {
 
   return (
     <>
-      {locked && !muted && (
-        <button
-          onClick={() => unlockAudio().then((ok) => setLocked(!ok))}
-          className="w-full bg-red-600 py-3 text-center font-semibold text-white print:hidden"
-        >
-          🔕 เบราว์เซอร์ยังบล็อกเสียงอยู่ — แตะตรงนี้ 1 ครั้งเพื่อเปิดเสียงแจ้งเตือน
-        </button>
-      )}
-
       {toast && (
         <Link
           href="/admin/orders"

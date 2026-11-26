@@ -1,3 +1,4 @@
+// @ts-ignore: Next.js loads global CSS imports during the build
 import "./globals.css";
 import type { Metadata, Viewport } from "next";
 import { Kanit } from "next/font/google";

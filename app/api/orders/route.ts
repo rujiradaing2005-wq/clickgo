@@ -121,13 +121,18 @@ export async function GET(req: Request) {
   const { data } = await db
     .from("orders")
     .select(
-      "id, order_no, table_id, total, status, payment_status, payment_method, pay_claimed, created_at, tables(name, name_en)"
+      "id, order_no, table_id, total, status, payment_status, payment_method, pay_claimed, created_at, tables(name, name_en), order_items(name, name_en, qty)"
     )
     .in("id", ids);
 
   const orders = (data ?? []).map((o: any) => {
-    const { tables, ...rest } = o;
-    return { ...rest, table_name: tables?.name ?? null, table_name_en: tables?.name_en ?? null };
+    const { tables, order_items, ...rest } = o;
+    return {
+      ...rest,
+      table_name: tables?.name ?? null,
+      table_name_en: tables?.name_en ?? null,
+      items: order_items ?? [],
+    };
   });
   return NextResponse.json({ orders });
 }

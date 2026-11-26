@@ -83,11 +83,7 @@ export default function AdminSettings() {
         <input value={f.shop_name} onChange={(e) => setF({ ...f, shop_name: e.target.value })} className={input} />
       </label>
       <label className="block">
-        <span className="text-sm text-gray-600">ชื่อร้าน (English)</span>
-        <input value={f.shop_name_en} onChange={(e) => setF({ ...f, shop_name_en: e.target.value })} className={input} />
-      </label>
-      <label className="block">
-        <span className="text-sm text-gray-600">สโลแกน (แสดงใต้ชื่อร้าน)</span>
+        <span className="text-sm text-gray-600">สโลแกนร้าน</span>
         <input value={f.tagline} onChange={(e) => setF({ ...f, tagline: e.target.value })} placeholder="คลิกเดียว พร้อมรับ" className={input} />
       </label>
       <label className="block">
@@ -95,24 +91,16 @@ export default function AdminSettings() {
         <input value={f.tagline_en} onChange={(e) => setF({ ...f, tagline_en: e.target.value })} placeholder="One click, ready to go" className={input} />
       </label>
       <label className="block">
-        <span className="text-sm text-gray-600">ข้อความโปรโมชัน/ประกาศ (แสดงบนแบนเนอร์หน้าเมนู)</span>
+        <span className="text-sm text-gray-600">ข้อความโปรโมชัน/ประกาศ</span>
         <input value={f.promo_text} onChange={(e) => setF({ ...f, promo_text: e.target.value })} placeholder="เมนูใหม่ ลองเลย!" className={input} />
       </label>
       <label className="block">
         <span className="text-sm text-gray-600">ข้อความโปรโมชัน/ประกาศ (English)</span>
         <input value={f.promo_text_en} onChange={(e) => setF({ ...f, promo_text_en: e.target.value })} placeholder="New menu, try it now!" className={input} />
       </label>
-      <label className="block">
-        <span className="text-sm text-gray-600">เบอร์โทรร้าน</span>
-        <input value={f.phone} onChange={(e) => setF({ ...f, phone: e.target.value })} placeholder="0812345678" className={input} />
-      </label>
-      <label className="block">
-        <span className="text-sm text-gray-600">ลิงก์แผนที่ (Google Maps)</span>
-        <input value={f.map_url} onChange={(e) => setF({ ...f, map_url: e.target.value })} placeholder="https://maps.app.goo.gl/..." className={input} />
-      </label>
-
+ 
       <div className="block">
-        <span className="text-sm text-gray-600">รูปแบนเนอร์/พื้นหลังหน้าแรก</span>
+        <span className="text-sm text-gray-600">รูปแบนเนอร์/พื้นหลัง</span>
         <div className="mt-1 flex items-center gap-3">
           <input type="file" accept="image/*" onChange={(e) => e.target.files?.[0] && uploadBanner(e.target.files[0])} className="text-sm" />
           {uploading && <span className="text-sm text-gray-500">กำลังอัปโหลด...</span>}
@@ -128,7 +116,7 @@ export default function AdminSettings() {
 
       <label className="block">
         <span className="text-sm text-gray-600">PromptPay (เบอร์โทร / เลขบัตร ปชช.)</span>
-        <span className="block text-xs text-orange-600">ต้องกรอกช่องนี้ ลูกค้าจึงจะเลือก "สแกนจ่าย" และเห็น QR ได้ (เว้นว่าง = จ่ายเงินสดอย่างเดียว)</span>
+        <span className="block text-xs text-orange-600">ต้องกรอกช่องนี้ ลูกค้าจึงจะเลือก "สแกนจ่าย" และเห็น QR ได้</span>
         <input value={f.promptpay} onChange={(e) => setF({ ...f, promptpay: e.target.value })} placeholder="0812345678" className={input} />
       </label>
       <label className="flex items-center gap-2">

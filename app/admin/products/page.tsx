@@ -7,7 +7,6 @@ import type { OptionGroup, Product } from "@/lib/types";
 
 const rid = () => Math.random().toString(36).slice(2, 9);
 
-// เทมเพลตตัวเลือก (id ของ option ต้องไม่ซ้ำกันในสินค้าเดียว)
 const drinkPreset = (): OptionGroup[] => [
   { id: rid(), name: "ระดับความหวาน", name_en: "Sugar level", type: "single", required: true, options: [
     { id: rid(), name: "0%", name_en: "", price: 0 },
@@ -76,7 +75,6 @@ export default function AdminProducts() {
     return supabase.storage.from("products").getPublicUrl(path).data.publicUrl;
   }
 
-  // ----- ตัวช่วยแก้ตัวเลือก -----
   const setGroups = (fn: (g: OptionGroup[]) => OptionGroup[]) =>
     setF((p) => ({ ...p, option_groups: fn(p.option_groups) }));
   const patchGroup = (gi: number, patch: Partial<OptionGroup>) =>
@@ -153,8 +151,6 @@ export default function AdminProducts() {
         <div className="grid gap-2 sm:grid-cols-2">
           <input value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} placeholder="ชื่อสินค้า (ไทย) *" className={inp} />
           <input value={f.name_en} onChange={(e) => setF({ ...f, name_en: e.target.value })} placeholder="Product name (English)" className={inp} />
-          <input value={f.description} onChange={(e) => setF({ ...f, description: e.target.value })} placeholder="รายละเอียด (ไทย)" className={inp} />
-          <input value={f.description_en} onChange={(e) => setF({ ...f, description_en: e.target.value })} placeholder="Description (English)" className={inp} />
           <select value={f.catKey} onChange={(e) => pickCategory(e.target.value)} className={inp}>
             {CATEGORY_PRESETS.map((c) => (
               <option key={c.key} value={c.key}>{c.icon} {c.th}</option>
@@ -198,7 +194,6 @@ export default function AdminProducts() {
               <button onClick={() => setGroups(() => [])} className="rounded border bg-white px-2 py-1 text-xs text-red-500">ล้างทั้งหมด</button>
             )}
           </div>
-          {f.option_groups.length === 0 && <p className="mt-2 text-xs text-gray-500">ไม่มีตัวเลือก = ลูกค้ากด + ใส่ตะกร้าได้ทันที</p>}
 
           {f.option_groups.map((g, gi) => (
             <div key={g.id} className="mt-3 space-y-2 rounded-lg border bg-white p-3">

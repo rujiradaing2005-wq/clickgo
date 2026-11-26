@@ -5,7 +5,7 @@ import { supabase, getSettings } from "@/lib/supabase";
 import { useCart } from "@/lib/cart";
 import { useLang } from "@/lib/i18n";
 import { baht } from "@/lib/format";
-import { useMyOrders, dropOrdersNotAtTable } from "@/lib/orders";
+import { useMyOrders, dropOrdersNotAtTable, resetVisitIfFinished, isActive } from "@/lib/orders";
 import LangToggle from "@/components/LangToggle";
 import BottomNav from "@/components/BottomNav";
 import Thumb from "@/components/Thumb";
@@ -58,7 +58,7 @@ export default function Landing({ params }: { params: Promise<{ tableId: string 
   const myOrders = useMyOrders();
 
   useEffect(() => {
-    sessionStorage.removeItem("clickgo-menu-state"); // สแกนเข้ามาใหม่ = เมนูเริ่มที่หมวด "ทั้งหมด"
+    sessionStorage.removeItem("clickgo-menu-state"); 
     Promise.all([
       supabase.from("tables").select("name, name_en").eq("id", tableId).maybeSingle(),
       getSettings(),
@@ -73,6 +73,7 @@ export default function Landing({ params }: { params: Promise<{ tableId: string 
         setTable(tb.data);
         setTableId(tableId);
         dropOrdersNotAtTable(tableId);
+        resetVisitIfFinished();
       }
       setS(st);
       setPopular((pop.data as Pop[]) ?? []);
@@ -96,6 +97,7 @@ export default function Landing({ params }: { params: Promise<{ tableId: string 
     : undefined;
 
   const hasOrders = !!myOrders && myOrders.length > 0;
+  const activeCount = myOrders?.filter(isActive).length ?? 0;
   const tile =
     "flex flex-1 flex-col items-center gap-1.5 rounded-2xl bg-white py-3.5 text-xs font-medium text-coffee shadow-sm ring-1 ring-black/5";
 
@@ -151,10 +153,10 @@ export default function Landing({ params }: { params: Promise<{ tableId: string 
                 <span className="text-brand">
                   <ReceiptIcon />
                 </span>
-                {t("track")}
-                {myOrders!.length > 1 && (
+                {activeCount > 0 ? t("track") : t("nav_orders")}
+                {activeCount > 1 && (
                   <span className="absolute right-3 top-2 rounded-full bg-brand px-1.5 text-[10px] font-bold text-white">
-                    {myOrders!.length}
+                    {activeCount}
                   </span>
                 )}
               </Link>

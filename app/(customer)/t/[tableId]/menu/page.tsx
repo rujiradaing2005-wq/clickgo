@@ -72,7 +72,7 @@ export default function MenuPage({ params }: { params: Promise<{ tableId: string
     (async () => {
       const [tb, p, st] = await Promise.all([
         supabase.from("tables").select("name, name_en").eq("id", tableId).maybeSingle(),
-        supabase.from("products").select("*").eq("is_available", true).order("category").order("name"),
+        supabase.from("products").select("*").order("category").order("name"),
         getSettings(),
       ]);
       if (tb.data) {
@@ -116,7 +116,7 @@ export default function MenuPage({ params }: { params: Promise<{ tableId: string
       </main>
     );
 
-  // หมวดหมู่ (ไม่ซ้ำ)
+  // หมวดหมู่ (ไม่ซ้ำ) พร้อมชื่ออังกฤษ
   const catMap = new Map<string, string | null>();
   products.forEach((p) => {
     if (!catMap.has(p.category) || (!catMap.get(p.category) && p.category_en)) catMap.set(p.category, p.category_en);
@@ -124,7 +124,7 @@ export default function MenuPage({ params }: { params: Promise<{ tableId: string
   const ORDER = ["อาหาร", "เครื่องดื่ม", "ไอศกรีม", "ของหวาน"];
   const rank = (c: string) => (ORDER.includes(c) ? ORDER.indexOf(c) : ORDER.length);
   const cats = Array.from(catMap.entries()).sort((a, b) => rank(a[0]) - rank(b[0]));
-  const activeCat = cat === "__all" || catMap.has(cat) ? cat : "__all"; 
+  const activeCat = cat === "__all" || catMap.has(cat) ? cat : "__all"; // หมวดที่จำไว้ถูกลบไปแล้ว → กลับไป "ทั้งหมด"
 
   const keyword = q.trim().toLowerCase();
   const filtered = products.filter(
@@ -133,13 +133,17 @@ export default function MenuPage({ params }: { params: Promise<{ tableId: string
       (!keyword ||
         [p.name, p.name_en, p.description, p.description_en].some((x) => (x ?? "").toLowerCase().includes(keyword)))
   );
+  // สินค้าที่พร้อมขายขึ้นก่อน สินค้าที่หมดอยู่ท้ายรายการ
+  filtered.sort((a, b) => Number(b.is_available) - Number(a.is_available));
   const popular = filtered.filter((p) => p.is_popular);
   const showPopular = popular.length > 0 && !keyword;
   const closed = s && !s.is_open;
 
   // ปุ่ม + : ถ้าสินค้ามีตัวเลือก → ไปหน้ารายละเอียด, ไม่มี → ใส่ตะกร้าเลย
   const AddBtn = ({ p, cls }: { p: Product; cls: string }) =>
-    hasOptions(p) ? (
+    !p.is_available ? (
+      <span className={`flex items-center justify-center ${cls} !bg-gray-200 !text-gray-400`}>+</span>
+    ) : hasOptions(p) ? (
       <Link href={`/product/${p.id}`} className={`flex items-center justify-center ${cls}`}>
         +
       </Link>
@@ -188,6 +192,7 @@ export default function MenuPage({ params }: { params: Promise<{ tableId: string
               : undefined
           }
         >
+          {/* ลวดลายวงกลมซ้อนด้านขวา (เมื่อไม่มีรูปแบนเนอร์) */}
           {!s?.banner_url && (
             <>
               <svg
@@ -256,10 +261,10 @@ export default function MenuPage({ params }: { params: Promise<{ tableId: string
             {popular.map((p) => (
               <div key={p.id} className="w-36 shrink-0 overflow-hidden rounded-2xl bg-white shadow-sm">
                 <Link href={`/product/${p.id}`}>
-                  <Thumb src={p.image_url} name={p.name} category={p.category} className="aspect-square w-full" />
+                  <Thumb src={p.image_url} name={p.name} category={p.category} className="aspect-square w-full" soldOut={!p.is_available} soldOutLabel={t("sold_out")} soldOutClass="text-sm" />
                 </Link>
                 <div className="p-2">
-                  <p className="truncate text-sm font-medium">{tr(p.name, p.name_en)}</p>
+                  <p className={`truncate text-sm font-medium ${p.is_available ? "" : "text-gray-400"}`}>{tr(p.name, p.name_en)}</p>
                   <div className="mt-1 flex items-center justify-between">
                     <span className="font-bold text-brand">{baht(p.price)}</span>
                     <AddBtn p={p} cls="h-7 w-7 rounded-lg bg-brand text-lg leading-none text-white" />
@@ -278,10 +283,10 @@ export default function MenuPage({ params }: { params: Promise<{ tableId: string
           {filtered.map((p) => (
             <div key={p.id} className="flex items-center gap-3 rounded-2xl bg-white p-2 shadow-sm">
               <Link href={`/product/${p.id}`} className="shrink-0">
-                <Thumb src={p.image_url} name={p.name} category={p.category} className="h-16 w-16 rounded-xl" />
+                <Thumb src={p.image_url} name={p.name} category={p.category} className="h-16 w-16 rounded-xl" soldOut={!p.is_available} soldOutLabel={t("sold_out")} soldOutClass="text-[10px]" />
               </Link>
               <Link href={`/product/${p.id}`} className="min-w-0 flex-1">
-                <p className="truncate font-medium">{tr(p.name, p.name_en)}</p>
+                <p className={`truncate font-medium ${p.is_available ? "" : "text-gray-400"}`}>{tr(p.name, p.name_en)}</p>
                 {p.description && <p className="truncate text-xs text-gray-500">{tr(p.description, p.description_en)}</p>}
                 <p className="mt-0.5 font-bold text-brand">{baht(p.price)}</p>
               </Link>

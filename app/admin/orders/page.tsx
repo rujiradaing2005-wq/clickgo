@@ -44,7 +44,7 @@ export default function AdminOrders() {
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "orders" }, () => load())
       .on("postgres_changes", { event: "UPDATE", schema: "public", table: "orders" }, () => load())
       .subscribe();
-    const poll = setInterval(load, 15000); // เผื่อ realtime หลุด
+    const poll = setInterval(load, 15000); 
     return () => {
       supabase.removeChannel(ch);
       clearInterval(poll);
@@ -100,7 +100,7 @@ export default function AdminOrders() {
                 )}
                 {o.pay_claimed && o.payment_status === "unpaid" && (
                   <p className="animate-pulse rounded bg-green-100 px-2 py-1 font-semibold text-green-700">
-                    ลูกค้าแจ้งโอนแล้ว
+                    ลูกค้ายืนยันชำระเงินแล้ว
                   </p>
                 )}
               </div>
@@ -135,7 +135,7 @@ export default function AdminOrders() {
                       onClick={() => update(o.id, { payment_status: "paid", payment_method: "promptpay" })}
                       className="rounded bg-emerald-700 px-3 py-1 text-white"
                     >
-                      รับโอนแล้ว
+                      รับเงินโอนแล้ว
                     </button>
                   </>
                 )}

@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useCart } from "@/lib/cart";
 import { useLang } from "@/lib/i18n";
-import { useMyOrders } from "@/lib/orders";
+import { useMyOrders, isActive } from "@/lib/orders";
 
 export default function BottomNav({
   active,
@@ -19,7 +19,7 @@ export default function BottomNav({
   const items = [
     { k: "home", href: tid ? `/t/${tid}` : "/", icon: "🏠", label: t("nav_home"), badge: 0 },
     { k: "menu", href: tid ? `/t/${tid}/menu` : "/", icon: "📖", label: t("nav_menu"), badge: 0 },
-    { k: "orders", href: "/orders", icon: "🧾", label: t("nav_orders"), badge: orders?.length ?? 0 },
+    { k: "orders", href: "/orders", icon: "🧾", label: t("nav_orders"), badge: orders?.filter(isActive).length ?? 0 },
     { k: "cart", href: "/cart", icon: "🛒", label: t("nav_cart"), badge: count },
   ];
 

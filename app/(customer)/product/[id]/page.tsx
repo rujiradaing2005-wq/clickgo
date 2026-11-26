@@ -31,7 +31,6 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
         if (!data) return setMissing(true);
         const prod = data as Product;
         setP(prod);
-        // ตัวเลือกแบบ "เลือก 1 อย่าง + จำเป็น" เลือกอันแรกไว้ให้ก่อน
         const init: Record<string, string[]> = {};
         (prod.option_groups ?? []).forEach((g) => {
           init[g.id] = g.type === "single" && g.required && g.options[0] ? [g.options[0].id] : [];
@@ -130,7 +129,6 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
     </button>
   );
 
-  // ================= เครื่องดื่ม (แบบตัวอย่าง Oreo Latte) =================
   if (isDrink)
     return (
       <main className="min-h-screen bg-[#ecd3b5] pb-28">
@@ -146,7 +144,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
             <p className="text-2xl font-bold text-coffee">{baht(p.price)}</p>
             <div className="pt-1">{qtyControl}</div>
           </div>
-          <Thumb src={p.image_url} name={p.name} category={p.category} className="h-44 w-36 rounded-3xl text-6xl shadow-xl" />
+          <Thumb src={p.image_url} name={p.name} category={p.category} className="h-44 w-36 rounded-3xl text-6xl shadow-xl" soldOut={!p.is_available} soldOutLabel={t("sold_out")} soldOutClass="text-base" />
         </div>
 
         <div className="-mt-4 min-h-[55vh] rounded-t-3xl bg-white px-5 pb-6 pt-2">
@@ -165,7 +163,6 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
       </main>
     );
 
-  // ================= อาหาร (แบบตัวอย่างราเมน) =================
   return (
     <main className="min-h-screen bg-gradient-to-b from-rose-50 to-cream pb-28">
       <div className="flex items-center justify-between px-4 pt-4">
@@ -174,7 +171,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
       </div>
 
       <div className="flex flex-col items-center px-5 pt-4">
-        <Thumb src={p.image_url} name={p.name} category={p.category} className="h-44 w-44 rounded-full text-7xl shadow-xl ring-4 ring-white" />
+        <Thumb src={p.image_url} name={p.name} category={p.category} className="h-44 w-44 rounded-full text-7xl shadow-xl ring-4 ring-white" soldOut={!p.is_available} soldOutLabel={t("sold_out")} soldOutClass="text-base" />
         <h1 className="mt-5 text-center text-2xl font-bold text-coffee">{tr(p.name, p.name_en)}</h1>
         {p.description && <p className="mt-1 text-center text-sm text-gray-500">{tr(p.description, p.description_en)}</p>}
         <p className="mt-1 text-xl font-bold text-brand">{baht(p.price)}</p>
